@@ -1,0 +1,13 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Item Room Icon
+  m_Controller: {fileID: 9100000, guid: e9632d8e8b482274cacddc5be97a8b43, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: 35987547d1c85bf43b717e69005374f9, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: fa1616e862bafc54a999fbd17885e98b, type: 2}
