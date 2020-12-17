@@ -36,6 +36,7 @@ public class Combatant : MonoBehaviour
         // Draw the first 2 cards and display them
         Hit();
         Hit();
+        CalculateHandTotal();
         StartCoroutine(DisplayHand(canTryToHideTheSecondCard));
     }
 

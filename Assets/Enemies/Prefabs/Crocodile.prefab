@@ -125,7 +125,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playingCardsDeck: {fileID: 11400000, guid: 356fd8c30e496104b825e6849e95885f, type: 2}
   attackModifier: 4
-  confidenceLevel: 0
+  confidenceLevel: 1
   timeBetweenCards: 0.15
   canTryToHideTheSecondCard: 1
   yOffsetForCards: 1

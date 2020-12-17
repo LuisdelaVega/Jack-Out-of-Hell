@@ -129,7 +129,7 @@ MonoBehaviour:
   timeBetweenCards: 0.15
   canTryToHideTheSecondCard: 1
   yOffsetForCards: 1
-  stoppingNumber: 16
+  stoppingNumber: 13
 --- !u!95 &-4585019529068238120
 Animator:
   serializedVersion: 3

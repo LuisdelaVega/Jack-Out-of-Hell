@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
@@ -10,11 +11,24 @@ public class GameManager : MonoBehaviour
     [Header("Enemies")]
     [SerializeField] private Deck enemyDeck;
 
+    public static event Action OnCombatEnded;
+
     private void Awake()
     {
         RandomizeRooms();
         DeckShuffler.Shuffle(enemyDeck.Cards);
         enemyDeck.ResetIndex();
+    }
+
+    private void OnEnable()
+    {
+        PlayerCombat.OnPlayerTurnEnd += HandlePlayerTurnEnd;
+        Enemy.OnEnemyTurnEnd += HandleEnemyTurnEnd;
+    }
+    private void OnDisable()
+    {
+        PlayerCombat.OnPlayerTurnEnd -= HandlePlayerTurnEnd;
+        Enemy.OnEnemyTurnEnd -= HandleEnemyTurnEnd;
     }
 
     private void RandomizeRooms()
@@ -44,5 +58,18 @@ public class GameManager : MonoBehaviour
         secondHalfOfRooms.CopyTo(allRooms, firstHalfOfRooms.Length);
 
         roomsDeck.SetCards(allRooms);
+    }
+
+    private void HandlePlayerTurnEnd(int handTotal)
+    {
+        Debug.Log($"Player's hand total: {handTotal}");
+    }
+
+    private void HandleEnemyTurnEnd(int handTotal)
+    {
+        Debug.Log($"Enemy's hand total: {handTotal}");
+
+        // TODO: This won't really happen like this. We need to trigger a new round if both the enemy and the player are alive
+        OnCombatEnded?.Invoke();
     }
 }
