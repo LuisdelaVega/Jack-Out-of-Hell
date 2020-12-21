@@ -118,7 +118,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyDeck: {fileID: 11400000, guid: 90a45c15d98b84344b849cc03d9b2136, type: 2}
   playingCardsDeck: {fileID: 11400000, guid: 356fd8c30e496104b825e6849e95885f, type: 2}
-  offset: 0.5
+  offset: 0.9
   timeToComplete: 0.5
 --- !u!61 &8809732935871543331
 BoxCollider2D:

@@ -8,23 +8,23 @@ public class Enemy : Combatant
     [SerializeField] private int stoppingNumber = 0;
 
     public static event Action<int> OnEnemyTurnEnd;
+    public static event Action OnHasDied;
 
     private void Awake()
     {
         m_transform = transform;
         DrawInitialhHand();
-        Invoke("Play", 1.5f);
     }
 
     private void OnEnable()
     {
         PlayerCombat.OnPlayerTurnEnd += HandlePlayerTurnEnd;
-        GameManager.OnCombatEnded += HandleEnemyCombatLoss;
+        GameManager.OnRoundEnded += HandleRoundEnded;
     }
     private void OnDisable()
     {
         PlayerCombat.OnPlayerTurnEnd -= HandlePlayerTurnEnd;
-        GameManager.OnCombatEnded -= HandleEnemyCombatLoss;
+        GameManager.OnRoundEnded -= HandleRoundEnded;
     }
 
     private void HandlePlayerTurnEnd<T>(T _) => StartCoroutine(Play());
@@ -48,11 +48,23 @@ public class Enemy : Combatant
         OnEnemyTurnEnd?.Invoke(handTotal);
     }
 
-    // TODO: This won't happen like this. The enemy and player will probably be the ones signaling when combat ends once either of their health points are depleted
-    private void HandleEnemyCombatLoss()
+    private void HandleRoundEnded()
     {
-        // TODO: Play a death sound and animation
+        canTryToHideTheSecondCard = true;
+        DrawInitialhHand();
+    }
+
+    public override void Damaged()
+    {
+        // TODO: Play Damaged sound and animation
+        Debug.Log("Enemy got damaged");
+    }
+
+    public override void Die()
+    {
+        // TODO: Play Death sound and animation
         ClearCards();
+        OnHasDied?.Invoke();
         Destroy(gameObject);
     }
 }

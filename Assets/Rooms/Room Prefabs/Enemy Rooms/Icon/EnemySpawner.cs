@@ -7,20 +7,30 @@ public class EnemySpawner : MonoBehaviour, IRoomTrigger
     [SerializeField] private Deck enemyDeck = null;
     [SerializeField] protected Deck playingCardsDeck = null;
 
-    [Header("Posiiton Offset")]
+    [Header("Posiiton Offset"), Range(0f, 0.99f)]
     [SerializeField] private float offset = 0.75f;
 
     [Header("Time")]
     [SerializeField] private float timeToComplete = 1f;
 
-    public static event Action OnEnemySpawned;
+    public static event Action<HealthBehaviour> OnEnemySpawned;
+    public static event Action OnPlayerMoved;
 
     public void TriggerRoom(Transform player)
     {
-        Instantiate(enemyDeck.GetNextCard(), new Vector2(player.position.x - offset, player.position.y + offset), Quaternion.identity);
+        var enemy = Instantiate(enemyDeck.GetNextCard(), new Vector2(player.position.x - offset, player.position.y + offset), Quaternion.identity);
+        
+        if (enemy.TryGetComponent<HealthBehaviour>(out var healthBehaviour))
+            OnEnemySpawned?.Invoke(healthBehaviour);
+
+        // Move the player to the oposite corner of the room
         LeanTween.move(player.gameObject, new Vector2(player.position.x + offset, player.position.y - offset), timeToComplete)
             .setEaseOutSine()
-            .setOnComplete(() => OnEnemySpawned?.Invoke());
+            .setOnComplete(() =>
+            {
+                if (enemy.TryGetComponent<HealthBehaviour>(out var healthBehaviour))
+                    OnPlayerMoved?.Invoke();
+            });
 
         // Shuffle and Reset the deck;
         playingCardsDeck.ResetIndex();

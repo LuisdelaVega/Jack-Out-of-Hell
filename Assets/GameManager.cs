@@ -11,23 +11,36 @@ public class GameManager : MonoBehaviour
     [Header("Enemies")]
     [SerializeField] private Deck enemyDeck;
 
-    public static event Action OnCombatEnded;
+    #region Combat
+    private HealthBehaviour playerHealth;
+    private int playerHandTotal;
+
+    private HealthBehaviour enemyHealth;
+    #endregion
+
+    public static event Action OnRoundEnded;
 
     private void Awake()
     {
         RandomizeRooms();
         DeckShuffler.Shuffle(enemyDeck.Cards);
         enemyDeck.ResetIndex();
+
+        playerHealth = GameObject.FindGameObjectWithTag("Player").GetComponent<HealthBehaviour>();
     }
 
     private void OnEnable()
     {
         PlayerCombat.OnPlayerTurnEnd += HandlePlayerTurnEnd;
+        PlayerCombat.OnHasDied += HandleGameOver;
+        EnemySpawner.OnEnemySpawned += SetCurrentEnemy;
         Enemy.OnEnemyTurnEnd += HandleEnemyTurnEnd;
     }
     private void OnDisable()
     {
         PlayerCombat.OnPlayerTurnEnd -= HandlePlayerTurnEnd;
+        PlayerCombat.OnHasDied -= HandleGameOver;
+        EnemySpawner.OnEnemySpawned-= SetCurrentEnemy;
         Enemy.OnEnemyTurnEnd -= HandleEnemyTurnEnd;
     }
 
@@ -60,16 +73,36 @@ public class GameManager : MonoBehaviour
         roomsDeck.SetCards(allRooms);
     }
 
+    private void SetCurrentEnemy(HealthBehaviour enemyHealth) => this.enemyHealth = enemyHealth;
+
     private void HandlePlayerTurnEnd(int handTotal)
     {
         Debug.Log($"Player's hand total: {handTotal}");
+        playerHandTotal = handTotal;
     }
 
-    private void HandleEnemyTurnEnd(int handTotal)
+    private void HandleEnemyTurnEnd(int enemyHandTotal)
     {
-        Debug.Log($"Enemy's hand total: {handTotal}");
+        Debug.Log($"Enemy's hand total: {enemyHandTotal}");
 
-        // TODO: This won't really happen like this. We need to trigger a new round if both the enemy and the player are alive
-        OnCombatEnded?.Invoke();
+        var handDifference = playerHandTotal - enemyHandTotal;
+        Debug.Log($"Hand difference {handDifference}");
+
+        bool playerIsDead = false;
+        bool enemyIsDead = false;
+
+        if (handDifference < 0)
+            playerIsDead = playerHealth.DealDamage(-handDifference) == 0;
+        else
+            enemyIsDead = enemyHealth.DealDamage(handDifference) == 0;
+
+        if (!playerIsDead && !enemyIsDead)
+            OnRoundEnded?.Invoke();
+    }
+
+    private void HandleGameOver()
+    {
+        // TODO: Implement Game Over
+        Debug.Log("YOU LOSE!");
     }
 }

@@ -7,15 +7,18 @@ public class CombatMenu : MonoBehaviour
 
     private void OnEnable()
     {
-        EnemySpawner.OnEnemySpawned += EnableButtons;
-        GameManager.OnCombatEnded += DisableButtons; // TODO: This will probably be broadcasted by the combatants instead of the GameManager
+        EnemySpawner.OnPlayerMoved += EnableButtons;
+        Enemy.OnHasDied += DisableButtons;
+        PlayerCombat.OnHasDied += DisableButtons;
     }
 
     private void OnDisable()
     {
-        EnemySpawner.OnEnemySpawned -= EnableButtons;
-        GameManager.OnCombatEnded -= DisableButtons;
+        EnemySpawner.OnPlayerMoved -= EnableButtons;
+        Enemy.OnHasDied -= DisableButtons;
+        PlayerCombat.OnHasDied -= DisableButtons;
     }
+
     private void EnableButtons() => buttons.SetActive(true);
     private void DisableButtons() => buttons.SetActive(false);
 }

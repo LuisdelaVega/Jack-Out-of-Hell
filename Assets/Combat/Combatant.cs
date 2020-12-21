@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Combatant : MonoBehaviour
+public abstract class Combatant : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] protected Deck playingCardsDeck = null;
 
     [Header("Stats")]
     [SerializeField] protected int attackModifier = 0;
+    public int AttackModifier => attackModifier;
 
     [Header("Properties")]
     [SerializeField] protected int confidenceLevel = 0;
@@ -109,8 +110,11 @@ public class Combatant : MonoBehaviour
         aces.Clear();
         allDrawnPlayingCards.Clear();
 
-        foreach (var card in allInstantiatedCards)
-            Destroy(card);
+        // Destroy instantiated objects
+        foreach (var card in allInstantiatedCards) Destroy(card);
         allInstantiatedCards.Clear();
     }
+
+    public abstract void Damaged();
+    public abstract void Die();
 }
