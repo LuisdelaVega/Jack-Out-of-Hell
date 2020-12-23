@@ -4,17 +4,37 @@ using UnityEngine;
 public class ModifierUI : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private TextMeshProUGUI attackModifier;
+    [SerializeField] private GameObject attackModifierCanvas;
+    [SerializeField] private TextMeshProUGUI attackModifierText;
 
     private Combatant combatant;
 
     private void Awake()
     {
-        combatant = GetComponentInParent<Combatant>();
-
-        // Set the text equal to the modifier amount
-        attackModifier.text = $"{combatant.AttackModifier}";
+        if (combatant == null)
+            combatant = GetComponentInParent<Combatant>();
     }
 
-    // TODO: Listen for changes in the modifier and update accordingly
+    private void OnEnable()
+    {
+        EnemySpawner.OnEnemySpawned += HandleCombatStart;
+        Enemy.OnHasDied += HandleCombatEnd;
+        PlayerCombat.OnHasDied += HandleCombatEnd;
+    }
+    private void OnDisable()
+    {
+        EnemySpawner.OnEnemySpawned -= HandleCombatStart;
+        Enemy.OnHasDied -= HandleCombatEnd;
+        PlayerCombat.OnHasDied -= HandleCombatEnd;
+    }
+
+    private void HandleCombatStart<T>(T _)
+    {
+        attackModifierCanvas.SetActive(true);
+
+        // Set the text equal to the modifier amount
+        attackModifierText.text = $"{combatant.AttackModifier}";
+    }
+
+    private void HandleCombatEnd() => attackModifierCanvas.SetActive(false);
 }

@@ -13,13 +13,13 @@ public class HealthBehaviour : MonoBehaviour
         private set
         {
             currentHealth = Mathf.Clamp(value, 0, maxHealth);
-            OnHealthUpdate?.Invoke(currentHealth, gameObject);
+            OnHealthUpdate?.Invoke(this);
         }
     }
 
     private Combatant combatant;
 
-    public static event Action<int, GameObject> OnHealthUpdate;
+    public static event Action<HealthBehaviour> OnHealthUpdate;
 
     private void Awake()
     {

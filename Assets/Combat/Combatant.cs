@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -19,6 +20,8 @@ public abstract class Combatant : MonoBehaviour
 
     protected Transform m_transform = null;
     protected int handTotal = 0;
+
+    protected HealthBehaviour healthBehaviour;
 
     #region Card Lists
     protected readonly List<PlayingCard> nonAces = new List<PlayingCard>();
@@ -117,4 +120,5 @@ public abstract class Combatant : MonoBehaviour
 
     public abstract void Damaged();
     public abstract void Die();
+
 }

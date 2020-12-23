@@ -8,17 +8,20 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject exitRoom;
     [SerializeField] private Deck roomsDeck;
 
-    [Header("Enemies")]
+    [Header("Decks")]
     [SerializeField] private Deck enemyDeck;
+    [SerializeField] private Deck playingCardDeck;
 
     #region Combat
+    private Combatant player;
     private HealthBehaviour playerHealth;
     private int playerHandTotal;
 
+    private Combatant enemy;
     private HealthBehaviour enemyHealth;
     #endregion
 
-    public static event Action OnRoundEnded;
+    public static event Action OnNewRoundStart;
 
     private void Awake()
     {
@@ -26,7 +29,8 @@ public class GameManager : MonoBehaviour
         DeckShuffler.Shuffle(enemyDeck.Cards);
         enemyDeck.ResetIndex();
 
-        playerHealth = GameObject.FindGameObjectWithTag("Player").GetComponent<HealthBehaviour>();
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Combatant>();
+        playerHealth = player.GetComponent<HealthBehaviour>();
     }
 
     private void OnEnable()
@@ -35,13 +39,15 @@ public class GameManager : MonoBehaviour
         PlayerCombat.OnHasDied += HandleGameOver;
         EnemySpawner.OnEnemySpawned += SetCurrentEnemy;
         Enemy.OnEnemyTurnEnd += HandleEnemyTurnEnd;
+        PlayerCombat.OnPlayerBusted+= HandlePlayerBusted;
     }
     private void OnDisable()
     {
         PlayerCombat.OnPlayerTurnEnd -= HandlePlayerTurnEnd;
         PlayerCombat.OnHasDied -= HandleGameOver;
-        EnemySpawner.OnEnemySpawned-= SetCurrentEnemy;
+        EnemySpawner.OnEnemySpawned -= SetCurrentEnemy;
         Enemy.OnEnemyTurnEnd -= HandleEnemyTurnEnd;
+        PlayerCombat.OnPlayerBusted -= HandlePlayerBusted;
     }
 
     private void RandomizeRooms()
@@ -73,7 +79,11 @@ public class GameManager : MonoBehaviour
         roomsDeck.SetCards(allRooms);
     }
 
-    private void SetCurrentEnemy(HealthBehaviour enemyHealth) => this.enemyHealth = enemyHealth;
+    private void SetCurrentEnemy(Combatant enemy)
+    {
+        this.enemy = enemy;
+        enemyHealth = enemy.GetComponent<HealthBehaviour>();
+    }
 
     private void HandlePlayerTurnEnd(int handTotal)
     {
@@ -91,13 +101,28 @@ public class GameManager : MonoBehaviour
         bool playerIsDead = false;
         bool enemyIsDead = false;
 
-        if (handDifference < 0)
-            playerIsDead = playerHealth.DealDamage(-handDifference) == 0;
-        else
-            enemyIsDead = enemyHealth.DealDamage(handDifference) == 0;
+        if (enemyHandTotal > 21)
+            enemyHealth.DealDamage(1);
+        else if (handDifference < 0)
+            playerIsDead = playerHealth.DealDamage(1 + enemy.AttackModifier) == 0;
+        else if (handDifference > 0)
+            enemyIsDead = enemyHealth.DealDamage(1 + player.AttackModifier) == 0;
 
         if (!playerIsDead && !enemyIsDead)
-            OnRoundEnded?.Invoke();
+            StartNewRound();
+    }
+
+    private void HandlePlayerBusted(int currentHealthForPlayer)
+    {
+        if (currentHealthForPlayer != 0)
+            StartNewRound();
+    }
+
+    private void StartNewRound()
+    {
+        DeckShuffler.Shuffle(playingCardDeck.Cards);
+        playingCardDeck.ResetIndex();
+        OnNewRoundStart?.Invoke();
     }
 
     private void HandleGameOver()

@@ -473,7 +473,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 2
+  m_UiScaleMode: 0
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 800, y: 600}
@@ -881,6 +881,7 @@ MonoBehaviour:
   exitRoom: {fileID: 903176591612032171, guid: b568b83fc1b490148aa7433d11334855, type: 3}
   roomsDeck: {fileID: 11400000, guid: 166a4af3a14cec942ab708f5051a2afa, type: 2}
   enemyDeck: {fileID: 11400000, guid: 90a45c15d98b84344b849cc03d9b2136, type: 2}
+  playingCardDeck: {fileID: 11400000, guid: 356fd8c30e496104b825e6849e95885f, type: 2}
 --- !u!4 &843569141
 Transform:
   m_ObjectHideFlags: 0
@@ -1361,13 +1362,29 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    - target: {fileID: 339905224962925917, guid: 4c2c6754eebbed84bb116840c22ab814, type: 3}
-      propertyPath: attackModifier
-      value: 4
+    - target: {fileID: 1468144753091968510, guid: 4c2c6754eebbed84bb116840c22ab814, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4326551327096090170, guid: 4c2c6754eebbed84bb116840c22ab814, type: 3}
-      propertyPath: m_Name
-      value: Modifiers
+    - target: {fileID: 1468144753091968510, guid: 4c2c6754eebbed84bb116840c22ab814, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1468144753091968510, guid: 4c2c6754eebbed84bb116840c22ab814, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1468144753091968510, guid: 4c2c6754eebbed84bb116840c22ab814, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1468144753091968510, guid: 4c2c6754eebbed84bb116840c22ab814, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1468144753091968510, guid: 4c2c6754eebbed84bb116840c22ab814, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4c2c6754eebbed84bb116840c22ab814, type: 3}

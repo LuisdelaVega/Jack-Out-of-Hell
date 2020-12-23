@@ -7,6 +7,7 @@ public class RoomSensor : MonoBehaviour
 
     private Transform m_transform = null;
     private bool playerIsInTheRoom = false;
+    private bool thereIsATriggerInTheRoom = false;
 
     private void Awake()
     {
@@ -17,15 +18,31 @@ public class RoomSensor : MonoBehaviour
         SetButtonsActive(false);
     }
 
-    private void OnEnable() => RoomPlacement.OnRoomPlaced += OnRoomPlacedHandler;
-    private void OnDisable() => RoomPlacement.OnRoomPlaced -= OnRoomPlacedHandler;
+    private void OnEnable()
+    {
+        //EnemySpawner.OnEnemySpawned += CombatHasStarted;
+        RoomPlacement.OnRoomPlaced += OnRoomPlacedHandler;
+        Enemy.OnHasDied += CombatHasEnded;
+    }
+
+
+    private void OnDisable()
+    {
+        //EnemySpawner.OnEnemySpawned -= CombatHasStarted;
+        RoomPlacement.OnRoomPlaced -= OnRoomPlacedHandler;
+        Enemy.OnHasDied -= CombatHasEnded;
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
         {
             playerIsInTheRoom = true;
-            SetButtonsActive(true);
+            SetButtonsActive(true && !thereIsATriggerInTheRoom);
+        }
+        else if (collision.TryGetComponent<IRoomTrigger>(out var _))
+        {
+            thereIsATriggerInTheRoom = true;
         }
     }
 
@@ -35,6 +52,10 @@ public class RoomSensor : MonoBehaviour
         {
             playerIsInTheRoom = false;
             SetButtonsActive(false);
+        }
+        else if (collision.TryGetComponent<IRoomTrigger>(out var _))
+        {
+            thereIsATriggerInTheRoom = false;
         }
     }
 
@@ -60,5 +81,12 @@ public class RoomSensor : MonoBehaviour
             else
                 playerMover.SetButtonActive(value);
         }
+    }
+
+    //private void CombatHasStarted<T>(T _) => isAnEnemyRoom = true;
+    private void CombatHasEnded()
+    {
+        if (playerIsInTheRoom)
+            thereIsATriggerInTheRoom = false;
     }
 }

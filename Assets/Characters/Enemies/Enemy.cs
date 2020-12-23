@@ -19,12 +19,13 @@ public class Enemy : Combatant
     private void OnEnable()
     {
         PlayerCombat.OnPlayerTurnEnd += HandlePlayerTurnEnd;
-        GameManager.OnRoundEnded += HandleRoundEnded;
+        GameManager.OnNewRoundStart += HandleRoundEnded;
     }
+
     private void OnDisable()
     {
         PlayerCombat.OnPlayerTurnEnd -= HandlePlayerTurnEnd;
-        GameManager.OnRoundEnded -= HandleRoundEnded;
+        GameManager.OnNewRoundStart -= HandleRoundEnded;
     }
 
     private void HandlePlayerTurnEnd<T>(T _) => StartCoroutine(Play());

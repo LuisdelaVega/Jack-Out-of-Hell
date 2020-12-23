@@ -9,6 +9,7 @@ TagManager:
   - Player Mover
   - Empty Room
   - Enemy Room
+  - Virtual Camera
   layers:
   - Default
   - TransparentFX
